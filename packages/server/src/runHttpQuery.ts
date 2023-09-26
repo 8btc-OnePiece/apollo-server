@@ -306,12 +306,25 @@ async function* writeMultipartBody(
 function orderExecutionResultFields(
   result: FormattedExecutionResult,
 ): FormattedExecutionResult {
+  let code;
+  let msg;
+  if (result.errors?.length) {
+    const extension = result.errors[0].extensions;
+    code = extension.code;
+    msg = extension.message;
+  } else {
+    code = 200;
+    msg = 'OK';
+  }
   return {
     errors: result.errors,
     data: result.data,
     extensions: result.extensions,
+    code: code,
+    msg: msg,
   };
 }
+
 function orderInitialIncrementalExecutionResultFields(
   result: GraphQLExperimentalFormattedInitialIncrementalExecutionResult,
 ): GraphQLExperimentalFormattedInitialIncrementalExecutionResult {
